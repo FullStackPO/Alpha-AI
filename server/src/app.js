@@ -8,12 +8,6 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 
-console.log("app.JS IS RUNNING");
-
-app.get("/", (req, res) => {
-    res.send("Hello");
-});
-
 app.use('/api/auth', authRouter)
 
 app.use(handleError)
