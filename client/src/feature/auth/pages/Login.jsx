@@ -1,13 +1,35 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, Navigate } from 'react-router'
+import { useAuth } from '../hook/useAuth'
+import { useNavigate } from 'react-router'
+import { useSelector } from 'react-redux'
 
 const Login = () => {
 
   const[email, setEmail] = useState("")
   const[password, setPassword] = useState("")
 
-  const submitHandler = (e) => {
+  const user = useSelector(state => state.auth.user)
+  const loading = useSelector(state => state.auth.loading)
+
+  const { loginHandler } = useAuth()
+  const navigate = useNavigate()
+
+  const submitHandler = async(e) => {
     e.preventDefault()
+
+    const payload = {
+      email,
+      password
+    }
+
+    await loginHandler(payload)
+    navigate("/")
+
+  }
+
+  if(!loading && user){
+    return <Navigate to='/' replace />
   }
 
   return (

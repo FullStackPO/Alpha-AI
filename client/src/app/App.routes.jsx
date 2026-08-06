@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 import Login from '../feature/auth/pages/Login'
 import Register from '../feature/auth/pages/Register'
+import Protected from '../feature/auth/components/Protected'
 
 export const router = createBrowserRouter([
     {
@@ -10,5 +11,9 @@ export const router = createBrowserRouter([
     {
         path : '/register',
         element : <Register />
+    },
+    {
+        path : '/',
+        element : <Protected><h1>Hello from Alpha AI</h1></Protected>
     }
 ])
