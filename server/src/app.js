@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import handleError from './middleware/error.middleware.js'
 import morgan from 'morgan'
 import cors from 'cors'
+import chatRouter from './routes/chat.route.js'
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.use(cors({
 app.use(morgan("dev"))
 
 app.use('/api/auth', authRouter)
+app.use('/api/chats', chatRouter)
 
 app.use(handleError)
 
