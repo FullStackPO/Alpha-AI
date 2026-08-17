@@ -1,6 +1,6 @@
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { ChatMistralAI } from '@langchain/mistralai'
-import { HumanMessage, SystemMessage } from '@langchain/core/messages'
+import { AIMessage, HumanMessage, SystemMessage } from '@langchain/core/messages'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -15,7 +15,14 @@ const mistralModel = new ChatMistralAI({
 })
 
 export const generateResponse = async( message ) => {
-    const response = await geminiModel.invoke(message)
+    const response = await geminiModel.invoke(message.map(msg=>{
+        if(msg.role == "user"){
+            return new HumanMessage(msg.content)
+        }
+        else if(msg.role == "ai"){
+            return new AIMessage(msg.content)
+        }
+    }))
     return response.text
 }
 
