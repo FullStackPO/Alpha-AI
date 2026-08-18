@@ -1,6 +1,6 @@
 import { generateResponse, generateTitle } from "../services/ai.service.js"
-import { chatModel } from "../models/chat.model.js"
-import { messageModel } from "../models/message.model.js"
+import chatModel from "../models/chat.model.js"
+import messageModel from "../models/message.model.js"
 
 export async function sendMessage( req, res, next ){
 
