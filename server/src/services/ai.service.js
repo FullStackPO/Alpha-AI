@@ -1,8 +1,7 @@
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { ChatMistralAI } from '@langchain/mistralai'
 import { AIMessage, HumanMessage, SystemMessage } from '@langchain/core/messages'
-import dotenv from 'dotenv'
-dotenv.config()
+import 'dotenv/config'
 
 const geminiModel = new ChatGoogleGenerativeAI({
     model : 'gemini-flash-latest',

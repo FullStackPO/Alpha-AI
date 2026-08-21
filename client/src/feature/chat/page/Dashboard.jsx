@@ -17,199 +17,77 @@ const Dashboard = () => {
 
 
     return (
-        <main className="min-h-screen bg-[#0b0b0b] p-3 sm:p-5 text-white">
-        <section
-          className="
-            flex min-h-[calc(100vh-24px)]
-            gap-4
-            rounded-3xl
-            border border-zinc-700
-            bg-[#111111]
-            p-3
-            shadow-2xl
-            sm:min-h-[calc(100vh-40px)]
-            sm:p-4
-          "
-        >
-          {/* ================= SIDEBAR ================= */}
-          <aside
-            className="
-              flex w-1/5 min-w-[180px] max-w-[260px]
-              flex-col
-              gap-6
-              rounded-2xl
-              border border-zinc-700
-              bg-[#151515]
-              p-4
-              shadow-lg
-            "
-          >
-            {/* Logo */}
-            <div className="border-b border-zinc-700 pb-5">
-              <h1
-                className="
-                  text-center
-                  text-xl
-                  font-semibold
-                  tracking-wide
-                  text-zinc-100
-                "
-              >
-                Alpha <span className="text-zinc-400">AI</span>
-              </h1>
-            </div>
+       <main className='min-h-screen w-full bg-[#07090f] p-3 text-white md:p-5'>
+      <section className='mx-auto flex h-[calc(100vh-1.5rem)] w-full gap-4 rounded-3xl border   p-1 md:h-[calc(100vh-2.5rem)] md:gap-6 md:p-1 border-none'>
+        <aside className='hidden h-full w-72 shrink-0 rounded-3xl border  bg-[#080b12] p-4 md:flex md:flex-col'>
+          <h1 className='mb-5 text-3xl font-semibold tracking-tight'>Perplexity</h1>
 
-            {/* Chat Titles */}
-            <div className="flex flex-col gap-3 overflow-y-auto">
-              {chatTitle.map((chats, index) => (
-                <button
-                  key={index}
-                  className="
-                    group
-                    w-full
-                    rounded-xl
-                    border border-zinc-700
-                    bg-[#1b1b1b]
-                    px-4
-                    py-3
-                    text-left
-                    text-sm
-                    text-zinc-300
-                    transition-all
-                    duration-200
-                    hover:border-zinc-400
-                    hover:bg-[#242424]
-                    hover:text-white
-                    hover:shadow-md
-                    active:scale-[0.98]
-                  "
-                >
-                  <span className="block truncate">
-                    {chats}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </aside>
-
-          {/* ================= CHAT AREA ================= */}
-          <div
-            className="
-              mx-auto
-              flex
-              w-4/5
-              flex-col
-              rounded-2xl
-              border border-zinc-700
-              bg-[#111111]
-              p-4
-              shadow-lg
-            "
-          >
-            {/* Chat Header */}
-            <div className="border-b border-zinc-800 pb-4">
-              <h2 className="text-lg font-medium text-zinc-200">
-                New Chat
-              </h2>
-              <p className="mt-1 text-xs text-zinc-500">
-                Ask Alpha AI anything
-              </p>
-            </div>
-
-            {/* Messages */}
-            <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-5">
-              
-              {/* User Message */}
-              <div className="flex justify-end">
-                <div
-                  className="
-                    max-w-[75%]
-                    rounded-2xl
-                    rounded-br-md
-                    border border-zinc-700
-                    bg-[#1d1d1d]
-                    px-4
-                    py-3
-                    text-sm
-                    text-zinc-200
-                  "
-                >
-                  Hello Alpha AI 👋
-                </div>
-              </div>
-
-              {/* AI Message */}
-              <div className="flex justify-start">
-                <div
-                  className="
-                    max-w-[80%]
-                    rounded-2xl
-                    rounded-bl-md
-                    border border-zinc-800
-                    bg-[#171717]
-                    px-4
-                    py-3
-                    text-sm
-                    leading-6
-                    text-zinc-300
-                  "
-                >
-                  Hello! 👋 How can I help you today?
-                </div>
-              </div>
-
-            </div>
-
-            {/* Input */}
-            <div
-              className="
-                flex
-                items-center
-                gap-2
-                rounded-xl
-                border border-zinc-700
-                bg-[#151515]
-                p-2
-                transition
-                focus-within:border-zinc-400
-              "
-            >
-              <input
-                type="text"
-                placeholder="Ask something..."
-                className="
-                  min-w-0
-                  flex-1
-                  bg-transparent
-                  px-3
-                  py-2
-                  text-sm
-                  text-white
-                  outline-none
-                  placeholder:text-zinc-600
-                "
-              />
-
+          <div className='space-y-2'>
+            {Object.values(chats).map((chat,index) => (
               <button
-                className="
-                  rounded-lg
-                  bg-white
-                  px-5
-                  py-2
-                  text-sm
-                  font-medium
-                  text-black
-                  transition
-                  hover:bg-zinc-200
-                  active:scale-95
-                "
+                onClick={()=>{openChat(chat.id)}}
+                key={index}
+                type='button'
+                className='w-full cursor-pointer rounded-xl border border-white/60 bg-transparent px-3 py-2 text-left text-base font-medium text-white/90 transition hover:border-white hover:text-white'
+              >
+                {chat.title}
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <section className='relative max-w-3/5 mx-auto flex h-full min-w-0 flex-1 flex-col gap-4'>
+
+          <div className='messages flex-1 space-y-3 overflow-y-auto pr-1 pb-30'>
+            {chats[ currentChatId ]?.messages.map((message) => (
+              <div
+                key={message.id}
+                className={`max-w-[82%] w-fit rounded-2xl px-4 py-3 text-sm md:text-base ${message.role === 'user'
+                    ? 'ml-auto rounded-br-none bg-white/12 text-white'
+                    : 'mr-auto border-none text-white/90'
+                  }`}
+              >
+                {message.role === 'user' ? (
+                  <p>{message.content}</p>
+                ) : (
+                  <ReactMarkdown
+                    components={{
+                      p: ({ children }) => <p className='mb-2 last:mb-0'>{children}</p>,
+                      ul: ({ children }) => <ul className='mb-2 list-disc pl-5'>{children}</ul>,
+                      ol: ({ children }) => <ol className='mb-2 list-decimal pl-5'>{children}</ol>,
+                      code: ({ children }) => <code className='rounded bg-white/10 px-1 py-0.5'>{children}</code>,
+                      pre: ({ children }) => <pre className='mb-2 overflow-x-auto rounded-xl bg-black/30 p-3'>{children}</pre>
+                    }}
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <footer className='rounded-3xl w-full absolute bottom-2 border border-white/60 bg-[#080b12] p-4 md:p-5'>
+            <form onSubmit={handleSubmitMessage} className='flex flex-col gap-3 md:flex-row'>
+              <input
+                type='text'
+                value={chatInput}
+                onChange={(event) => setChatInput(event.target.value)}
+                placeholder='Type your message...'
+                className='w-full rounded-2xl border border-white/50 bg-transparent px-4 py-3 text-lg text-white outline-none transition placeholder:text-white/45 focus:border-white/90'
+              />
+              <button
+                type='submit'
+                disabled={!chatInput.trim()}
+                className='rounded-2xl border border-white/60 px-6 py-3 text-lg font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50'
               >
                 Send
               </button>
-            </div>
-          </div>
+            </form>
+          </footer>
         </section>
-      </main>
+      </section>
+    </main>
     )
 }
 

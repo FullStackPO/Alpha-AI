@@ -1,9 +1,7 @@
 import userModel from "../models/user.model.js";
 import { sendEmail } from "../services/mail.service.js";
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
-
-dotenv.config()
+import 'dotenv/config'
 
 export async function register(req, res, next) {
     try {
