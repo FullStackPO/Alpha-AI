@@ -1,23 +1,39 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { useSelector } from 'react-redux'
 import { useChat } from '../hook/useChat'
+import remarkGfm from 'remark-gfm'
+
 
 const Dashboard = () => {
-  
-    const chat = useChat()
+  const chat = useChat()
+  const [ chatInput, setChatInput ] = useState('')
+  const chats = useSelector((state) => state.chat.chats)
+  const currentChatId = useSelector((state) => state.chat.currentChatId)
 
-    const chatTitle = ["chat-title","chat-title","chat-title","chat-title","chat-title","chat-title"]
+  useEffect(() => {
+    chat.initializeSocketConnection()
+    chat.handleGetChats()
+  }, [])
 
-    const user = useSelector(state => state.auth.user)
-    console.log(user)
+  const handleSubmitMessage = (event) => {
+    event.preventDefault()
 
-    useEffect(() => { 
-      chat.initializeSocketConnection()
-    }, [])
+    const trimmedMessage = chatInput.trim()
+    if (!trimmedMessage) {
+      return
+    }
 
+    chat.handleSendMessage({ message: trimmedMessage, chatId: currentChatId })
+    setChatInput('')
+  }
 
-    return (
-       <main className='min-h-screen w-full bg-[#07090f] p-3 text-white md:p-5'>
+  const openChat = (chatId) => {
+    chat.handleOpenChat(chatId,chats)
+  }
+
+  return (
+    <main className='min-h-screen w-full bg-[#07090f] p-3 text-white md:p-5'>
       <section className='mx-auto flex h-[calc(100vh-1.5rem)] w-full gap-4 rounded-3xl border   p-1 md:h-[calc(100vh-2.5rem)] md:gap-6 md:p-1 border-none'>
         <aside className='hidden h-full w-72 shrink-0 rounded-3xl border  bg-[#080b12] p-4 md:flex md:flex-col'>
           <h1 className='mb-5 text-3xl font-semibold tracking-tight'>Perplexity</h1>
@@ -88,7 +104,7 @@ const Dashboard = () => {
         </section>
       </section>
     </main>
-    )
+  )
 }
 
 export default Dashboard
