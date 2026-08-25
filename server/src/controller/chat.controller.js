@@ -2,49 +2,81 @@ import { generateResponse, generateTitle } from "../services/ai.service.js"
 import chatModel from "../models/chat.model.js"
 import messageModel from "../models/message.model.js"
 
-export async function sendMessage( req, res, next ){
+export async function sendMessage(req, res, next) {
+  console.log("🔥 sendMessage controller reached")
 
   try {
-    const { message , chat: chatId } = req.body
+    const { message, chat: chatId } = req.body
 
-    let title = null, chat = null;
+    console.log("1️⃣ message:", message)
+    console.log("2️⃣ chatId:", chatId)
 
-    if(!chatId){
+    let title = null
+    let chat = null
+
+    if (!chatId) {
+      console.log("3️⃣ Generating title...")
+
       title = await generateTitle(message)
+
+      console.log("4️⃣ Title generated:", title)
+
       chat = await chatModel.create({
-        user : req.user.id,
+        user: req.user.id,
         title
       })
+
+      console.log("5️⃣ Chat created:", chat._id)
+    } else {
+      console.log("3️⃣ Existing chat")
+
+      chat = await chatModel.findById(chatId)
+
+      console.log("4️⃣ Chat found:", chat?._id)
     }
 
     const userMessage = await messageModel.create({
-      chat : chatId || chat._id,
-      content : message,
-      role : "user"
+      chat: chat._id,
+      content: message,
+      role: "user"
     })
 
-    const messages = await messageModel.find({ chat : chatId || chat._id })
+    console.log("6️⃣ User message created")
+
+    const messages = await messageModel.find({
+      chat: chat._id
+    })
+
+    console.log("7️⃣ Messages fetched:", messages.length)
+
+    console.log("8️⃣ Generating AI response...")
 
     const result = await generateResponse(messages)
 
+    console.log("9️⃣ AI response generated")
+
     const aiMessage = await messageModel.create({
-      chat : chatId || chat._id,
-      content : result,
-      role : "ai"
+      chat: chat._id,
+      content: result,
+      role: "ai"
     })
+
+    console.log("🔟 AI message saved")
 
     res.status(201).json({
-      title,
+      title: chat.title,
       chat,
-      aiMessage  
+      aiMessage
     })
 
-  } 
+  } catch (err) {
+    console.log("❌ ERROR:", err)
+    console.log("❌ ERROR MESSAGE:", err.message)
+    console.log("❌ ERROR STATUS:", err.status)
+    console.log("❌ ERROR RESPONSE:", err.response?.data)
 
-  catch (err) {
     next(err)
   }
-
 }
 
 export async function getChats(req, res, next){
